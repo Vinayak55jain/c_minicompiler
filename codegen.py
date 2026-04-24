@@ -110,7 +110,7 @@ class CodeGen:
         if isinstance(node, Block):
             return sum(self._count_block(s) for s in node.stmts)
         if isinstance(node, VarDecl):
-            sz = node.array_size * 4 if node.array_size else 8
+            sz = node.array_size * 8 if node.array_size else 8
             return sz
         if isinstance(node, IfStmt):
             r = self._count_block(node.then_branch)

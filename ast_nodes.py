@@ -38,6 +38,7 @@ class Param(Node):
 class VarDecl(Node):
     name: str
     ctype: CType
+    array_size: Optional[int] = None
     init: Optional[Node] = None
 
 @dataclass
@@ -51,8 +52,8 @@ class ExprStmt(Node):
 @dataclass
 class IfStmt(Node):
     cond: Node
-    then_stmt: Node
-    else_stmt: Optional[Node] = None
+    then_branch: Node
+    else_branch: Optional[Node] = None
 
 @dataclass
 class WhileStmt(Node):
@@ -63,12 +64,12 @@ class WhileStmt(Node):
 class ForStmt(Node):
     init: Optional[Node]
     cond: Optional[Node]
-    step: Optional[Node]
+    incr: Optional[Node]
     body: Node
 
 @dataclass
 class ReturnStmt(Node):
-    expr: Optional[Node] = None
+    value: Optional[Node] = None
 
 # Expressions
 
@@ -85,11 +86,12 @@ class BinOp(Expr):
 @dataclass
 class UnaryOp(Expr):
     op: str
-    expr: Expr
+    operand: Expr
+    prefix: bool = True
 
 @dataclass
 class Call(Expr):
-    func: str
+    name: str
     args: List[Expr]
 
 @dataclass
@@ -110,9 +112,9 @@ class StringLiteral(Expr):
 
 @dataclass
 class Assign(Expr):
-    left: Expr
+    target: Expr
     op: str
-    right: Expr
+    value: Expr
 
 @dataclass
 class ArrayIndex(Expr):

@@ -184,23 +184,23 @@ class SemanticAnalyser:
             self.analyse_expr(expr.array, scope)
             self.analyse_expr(expr.index, scope)
             base = getattr(expr.array, 'ctype', CType('int'))
-            if base.ptr_level > 0:
-                expr.ctype = CType(base.name, base.ptr_level - 1)
+            if base.ptr > 0:
+                expr.ctype = CType(base.base, base.ptr - 1)
             else:
-                expr.ctype = CType(base.name)
+                expr.ctype = CType(base.base)
             return expr.ctype
 
         elif isinstance(expr, Deref):
             t = self.analyse_expr(expr.expr, scope)
-            if t and t.ptr_level > 0:
-                expr.ctype = CType(t.name, t.ptr_level - 1)
+            if t and t.ptr > 0:
+                expr.ctype = CType(t.base, t.ptr - 1)
             else:
                 expr.ctype = CType('int')
             return expr.ctype
 
         elif isinstance(expr, AddrOf):
             t = self.analyse_expr(expr.expr, scope)
-            expr.ctype = CType(t.name if t else 'int', (t.ptr_level if t else 0) + 1)
+            expr.ctype = CType(t.base if t else 'int', (t.ptr if t else 0) + 1)
             return expr.ctype
 
         return None
